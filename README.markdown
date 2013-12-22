@@ -6,7 +6,7 @@ About
 
 Use (and also freely study, modify and share) this software on GNU/Linux based computers (especially Raspberry Pis) with BlueZ to provide Bluetooth Internet (Network Access Point profile) to compatible Android phones/tablets and also other computers.
 
-This software just simply does the 'automation' part to make sharing LAN/ethernet internet from computers to other devices via Bluetooth simpler. The real Bluetooth Internet engine is BlueZ.
+This software just simply does the 'automation' part to make sharing LAN/ethernet internet from computers to other devices via Bluetooth simpler. The real Bluetooth Internet engine is BlueZ. It also has a 'BlueZ agent' (edl_agent) to auto-accept Bluetooth pairing and connection requests - useful for a headless Raspberry Pi.
 
 This is essentially the same software managing [EcoDroidLink Bluetooth Access Point for Android](http://www.clearevo.com/ecodroidlink) - please visit to see real usage screenshots on Android, power-consuption test results comparing Bluetooth vs WIFI internet, Android setup instructions and also ready-flashed SD-cards for Raspberry Pis and more.
 
