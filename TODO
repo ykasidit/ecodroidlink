@@ -1,0 +1,31 @@
+* manual ip method
+
+* manual ip + dns mode for direct computer to pi development via ssh +
+   bt obex auto accept method too
+
+* ifconfig how to speficy gateway and dns? test on home network
+
+* make edl_nap do br by itself - do something like:
+sudo ifconfig eth0 0.0.0.0 0.0.0.0 (or overrided eth0 param
+sudo brctl delbr edl_br0
+sudo brctl addbr edl_br0
+sudo ifconfig edl_br0 0.0.0.0 0.0.0.0
+sudo dhclient edl_br0 (or if ip supplied and netmask supplied then
+   sudo ifconfig a.a.a.a b.b.b.b) 
+
+* tell user must install bridge-utils
+* main param in edl_main optionally takes an interface name to
+   overridate the default "eth0" and second param is ip - to use
+   ifconfig instead of dhclient...
+
+* test on raspbian and archlinux again...
+
+* test ssh - development
+  - raspbian
+  - archlinux
+
+---
+
+make all edl_* handle sigint and cleanup before exit
+let edl_stop call killall -INT to cleanup well before ext
+edl_stop make as singleton too

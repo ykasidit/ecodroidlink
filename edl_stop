@@ -1,0 +1,11 @@
+#!/usr/bin/python
+
+import edl_util
+
+edl_util.printlog("edl_stop: stop start");
+edl_util.edl_call_no_log("killall edl_main", "edl_stop")
+edl_util.edl_call_no_log("killall edl_agent", "edl_stop")
+edl_util.edl_call_no_log("killall edl_nap", "edl_stop")    
+edl_util.edl_call_no_log("hciconfig -a hci0 down", "edl_stop")
+edl_util.printlog("edl_stop: stop done");
+

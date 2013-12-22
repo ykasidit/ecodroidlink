@@ -1,0 +1,22 @@
+#!/usr/bin/python
+
+#EcoDroidLink/ykasidit@gmail.com - edl_main - calls the mainloop of edl_utll which does: startup, prepares bt dongle, auto pairs, auto accept bt nap connections and periodic checks for running for Bluetooth Network Access Point
+
+__author__ = "Kasidit Yusuf"
+__copyright__ = "EcoDroidLink Copyright (c) 2013 Kasidit Yusuf"
+__credits__ = ["Kasidit Yusuf"]
+__license__ = "GPL"
+__version__ = "1.1.0"
+__maintainer__ = "Kasidit Yusuf"
+__email__ = "ykasidit@gmail.com"
+__status__ = "Production"
+
+#header format from http://stackoverflow.com/questions/1523427/python-what-is-the-common-header-format
+
+import edl_util
+import singleton
+
+#http://stackoverflow.com/questions/380870/python-single-instance-of-program
+me = singleton.SingleInstance() # will sys.exit(-1) if other instance is running
+
+edl_util.main_loop()
