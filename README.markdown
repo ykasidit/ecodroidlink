@@ -40,7 +40,7 @@ Then, it would proceed - once it shows "edl: Bluetooth Network Access Point Serv
 
 (I'm using usb0 here since I don't have LAN internet right now, so using 'USB Tethering' from my phone as the internet source... if your're using the normal eth0 ethernet/LAN then don't specify "--interface usb0"! Just use "sudo ./edl_main")
 
-kasidit@kasidit-computer:~/ecodroidlink$ sudo ./edl_main --interface usb0
+<pre>kasidit@kasidit-computer:~/ecodroidlink$ sudo ./edl_main --interface usb0
 edl: using network interface usb0
 edl: using dhcp
 edl: EcoDroidLink initialzing/cleaning processes and adapter state...
@@ -90,3 +90,4 @@ edl: Bluetooth Network Access Point Server (for nap) registered for bridge edl_b
 edl: agent starting
 edl: this is probably an older bluez version - trying old compat code...
 edl: auto-pair/accept agent registered with older bluez method
+</pre>
