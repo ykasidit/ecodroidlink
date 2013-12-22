@@ -34,7 +34,7 @@ HOWTO Setup and Use
 
 Then, it would proceed - once it shows "edl: Bluetooth Network Access Point Server (for nap) registered for bridge edl_br0" - this means it's done! Now you can proceed to connect from your Android device or other computers which have Bluetooth.
 
-- For instructions and screenshots on how to setup Android phones/tablets to use your Bluetooth Internet - please see the "Android Setup" part of the [Official EcoDroidLink Page](http://www.clearevo.com/ecodroidlink).
+- For instructions and screenshots on how to setup Android phones/tablets to use your new Bluetooth Internet source - please see the "Android Bluetooth Internet Setup" topic of the [Official EcoDroidLink Page](http://www.clearevo.com/ecodroidlink) - there are also intructions/screenchots to setup and use Bluetooth Internet on Windows 7, Windows XP and Ubuntu computers in the "Computer Bluetooth interent Setup" section in that same page.
 
 - Below is an example output EcoDroidLink running on Ubuntu 12.04:
 
