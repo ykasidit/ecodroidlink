@@ -1,19 +1,15 @@
-* manual ip method
+* make --use_existing_bridge method - for normal manual ip method\
+
+* does this dynamic bridge method handle eth0 physical remove/add? if
+   not then remove all this dynamic bridge code and use bridge only!
+
+* --dns-server for non-internet mode use as local http server
 
 * manual ip + dns mode for direct computer to pi development via ssh +
    bt obex auto accept method too
 
 * ifconfig how to speficy gateway and dns? test on home network
 
-* make edl_nap do br by itself - do something like:
-sudo ifconfig eth0 0.0.0.0 0.0.0.0 (or overrided eth0 param
-sudo brctl delbr edl_br0
-sudo brctl addbr edl_br0
-sudo ifconfig edl_br0 0.0.0.0 0.0.0.0
-sudo dhclient edl_br0 (or if ip supplied and netmask supplied then
-   sudo ifconfig a.a.a.a b.b.b.b) 
-
-* tell user must install bridge-utils
 * main param in edl_main optionally takes an interface name to
    overridate the default "eth0" and second param is ip - to use
    ifconfig instead of dhclient...
