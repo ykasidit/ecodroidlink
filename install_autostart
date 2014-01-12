@@ -1,0 +1,57 @@
+#!/usr/bin/python
+
+# This just creates an 'upstart' autostart script for the current path/location of edl_main - for full info see - http://www.debian-administration.org/articles/28
+
+from edl_util import edl_call
+import os
+
+start_path = os.getcwd()
+start_path += "/"
+
+edl_main_fullpath = start_path+"edl_main"
+edl_stop_fullpath = start_path+"edl_stop"
+
+autostart_script = """#!/bin/sh
+# /etc/init.d/ecodroidlink
+
+# Carry out specific functions when asked to by the system
+case "$1" in
+  start)
+    """+edl_main_fullpath+" &"+"""
+    echo "EcoDroidLink start-on-boot done"
+    ;;
+  stop)
+    """+edl_stop_fullpath+"""
+    echo "EcoDroidLink stop done"
+    ;;
+  *)
+    echo "Usage: /etc/init.d/ecodroidlink {start|stop}"
+    exit 1
+    ;;
+esac
+
+exit 0"""
+
+f = open('generated_autostart_file', 'w')
+f.write(autostart_script)
+f.close()
+
+ret = edl_call("sudo cp generated_autostart_file /etc/init.d/ecodroidlink","autostart_gen")
+
+if (ret!=0):
+   print("error: can't write to /etc/init.d/ecodroidlink")
+   exit(-1)
+
+ret = edl_call("sudo chmod 755 /etc/init.d/ecodroidlink","autostart_gen")
+
+if (ret!=0):
+   print("error: can't chmod /etc/init.d/ecodroidlink","autostart_gen")
+   exit(-1)
+
+ret = edl_call("sudo update-rc.d ecodroidlink defaults","autostart_gen")
+
+if (ret!=0):
+   print("error: can't update-rc.d to install the generated autostart script","autostart_gen")
+   exit(-1)
+
+print("Successfully setup auto-start-on-boot for edl_main")

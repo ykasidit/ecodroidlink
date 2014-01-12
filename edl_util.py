@@ -99,7 +99,7 @@ def edl_init_adapter():
 
     ret = edl_call("hciconfig -a hci0 sspmode 1", "edl_init")
     if (ret != 0):
-        return ret;
+        printlog("edl: NOTE - The local (USB) Bluetooth device on this computer doesn't support simple-pairing-mode - you'd need to enter 0000 to pair...")
 
     ret = edl_call("hciconfig -a hci0 piscan", "edl_init")
     if (ret != 0):
@@ -188,14 +188,19 @@ def main_loop():
             printlog("edl: CRITICAL set DHCP for newly created bridge failed!")
             break;
 
+        #get path to local module - since edl_nap and edl_agent are in the same folder        
+        encoding = sys.getfilesystemencoding()
+        this_path = os.path.dirname(unicode(__file__, encoding))
+
         #start new NAP process - start this before the agent so the sdp profile would be there before users come to pair and discover services...
-        
-        nap_process = subprocess.Popen('./edl_nap edl_br0', shell=True)
+
+        printlog('edl: path_to_execute agent and nap: '+this_path)
+        nap_process = subprocess.Popen(this_path+'/edl_nap edl_br0', shell=True)
 
         time.sleep(5)
 
         #start new auto accept agent
-        agent_process = subprocess.Popen('./edl_agent', shell=True)
+        agent_process = subprocess.Popen(this_path+'/edl_agent', shell=True)
         #printlog ("precheck edl_agent_status: " + str(agent_process.poll()))
         
         watch_agent_and_nap_process(agent_process,nap_process)

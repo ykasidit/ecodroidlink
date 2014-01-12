@@ -242,7 +242,7 @@ if __name__ == '__main__':
                 except dbus.exceptions.DBusException as e:
                     es = str(e)
                     if ("org.bluez.Error.AlreadyExists" in es):
-                            printlog("edl: User might be on a Graphical Desktop with bluetooth-applet to handle pairing and connection attempts by graphical diaglogs - so our automated agent can't register in its place (and not required) - agent registration failed with cause: "+es+"\nNote: user can run 'killall bluetooth-applet' anytime to use our automated agent instead... waiting 15 secs to try again")
+                            printlog("edl: [Optional] User might be on a Graphical Desktop with bluetooth-applet to handle pairing and connection attempts by graphical diaglogs - so our automated agent can't register in its place (and not required) - agent registration failed with cause: "+es+" - so user can run 'killall bluetooth-applet' (or any other bluetooth pairing program like 'blueman-manager' - try do a 'ps | grep blue' to check) anytime to use our automated agent instead... waiting 15 secs to try again")
                             time.sleep(15)
                     else:
                         raise e #this is pobably an older bluez to throw to run the older compat code in outer "except:" below
@@ -283,7 +283,7 @@ if __name__ == '__main__':
                 except dbus.exceptions.DBusException as e:
                     es = str(e)
                     if ("org.bluez.Error.AlreadyExists" in es):
-                        printlog("edl: User might be on a Graphical Desktop with bluetooth-applet to handle pairing and connection attempts by graphical diaglogs - so our automated agent can't register in its place (and not required) - agent registration failed with cause: "+es+"\nNote: user can run 'killall bluetooth-applet' anytime to use our automated agent instead... waiting 15 secs to try again")
+                        printlog("edl: [Optional] User might be on a Graphical Desktop with bluetooth-applet to handle pairing and connection attempts by graphical diaglogs - so our automated agent can't register in its place (and not required) - agent registration failed with cause: "+es+" - so user can run 'killall bluetooth-applet' (or any other bluetooth pairing program like 'blueman-manager' - try do a 'ps | grep blue' to check) anytime to use our automated agent instead... waiting 15 secs to try again")
                     else:
                         printlog("edl: unexpected exception in old method agent registration: "+es)
                     time.sleep(15)
