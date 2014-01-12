@@ -27,14 +27,15 @@ HOWTO Setup and Use
 
 - Make sure you have a working ethernet/LAN internet source connected to your computer (with DHCP enabled in the router - default for most setups).
 
-- Ok, let's start the EcoDroidLink main manager - edl_main - it would make a new "bridge" and put your eth0 (ethernet) connection in it, reset DHCP on it - ready to share to new Bluetooth connections - to do all of this and more, it requires root access so a 'sudo' is required. Enter the following command: 
+Let's test it
+-------------
+
+Ok, let's test it first: let's start the EcoDroidLink main manager - edl_main - it would make a new "bridge" and put your eth0 (ethernet) connection in it, reset DHCP on it - ready to share to new Bluetooth connections - to do all of this and more, it requires root access so a 'sudo' is required. Enter the following command: 
 <pre>sudo ./edl_main</pre>
 
 (Note: If your internet-source is not the default 'eth0' - you can specify it via the '--interface' option. So if your internet source is usb0, use a command like: sudo ./edl_main --interface usb0)
 
 Then, it would proceed - once it shows "edl: Bluetooth Network Access Point Server (for nap) registered for bridge edl_br0" - this means it's done! Now you can proceed to connect from your Android device or other computers which have Bluetooth.
-
-- For instructions and screenshots on how to setup Android phones/tablets to use your new Bluetooth Internet source - please see the "Android Bluetooth Internet Setup" topic of the [Official EcoDroidLink Page](http://www.clearevo.com/ecodroidlink) - there are also intructions/screenchots to setup and use Bluetooth Internet on Windows 7, Windows XP and Ubuntu computers in the "Computer Bluetooth interent Setup" section in that same page.
 
 - Below is an example output EcoDroidLink running on Ubuntu 12.04:
 
@@ -91,3 +92,17 @@ edl: agent starting
 edl: this is probably an older bluez version - trying old compat code...
 edl: auto-pair/accept agent registered with older bluez method
 </pre>
+
+If all goes well, now let's connect from your android phone/tablet - for instructions and screenshots on how to setup Android phones/tablets to use your new Bluetooth Internet source - please see the "Android Bluetooth Internet Setup" topic of the [Official EcoDroidLink Page](http://www.clearevo.com/ecodroidlink) - there are also intructions/screenchots to setup and use Bluetooth Internet on Windows 7, Windows XP and Ubuntu computers in the "Computer Bluetooth interent Setup" section in that same page.
+
+If you've got internet working from your android, let's install it for autostart in the next section below.
+
+Make EcoDroidLink autostart-on-boot
+----------------------------------
+
+Simply run:
+<pre>sudo ./install_autostart</pre>
+
+If it shows "Successfully setup auto-start-on-boot for edl_main" then you're done - reboot your pi and test it! For example run:
+<pre>sudo shutdown -r now</pre>
+
