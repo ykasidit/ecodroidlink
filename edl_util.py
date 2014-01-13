@@ -99,7 +99,7 @@ def watch_agent_and_nap_process(agent_process,nap_process):
         #end of watcher def
 
 def main_loop(use_existing_bridge,src_interface):
-    edl_call("echo 1 > /proc/sys/net/ipv4/ip_forward","edl")
+    edl_call("sudo echo 1 > /proc/sys/net/ipv4/ip_forward","edl")
     while (1):
         printlog ("edl: EcoDroidLink initialzing/cleaning processes and adapter state...")
         edl_deinit()
