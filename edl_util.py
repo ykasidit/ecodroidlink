@@ -99,7 +99,7 @@ def watch_agent_and_nap_process(agent_process,nap_process):
         #end of watcher def
 
 def main_loop(use_existing_bridge,src_interface):
-    edl_call("sudo echo 1 > /proc/sys/net/ipv4/ip_forward","edl")
+    edl_call("sudo echo 1 > /proc/sys/net/ipv4/ip_forward","edl") # Although, theoretically this is 'ip forwarding' might not be required since the bridge works at the lower layer so it should already forwards all ip packets (http://www.linuxjournal.com/article/8172), and I've tested that the bluetooth-nap works without this ip-forward, but I'm not so sure if I understand correctly - so just enable it here just-in-case - perhaps for future advanced non-bridging modes like a local router with dns-server that also filters/redirects traffic...
     while (1):
         printlog ("edl: EcoDroidLink initialzing/cleaning processes and adapter state...")
         edl_deinit()
