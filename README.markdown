@@ -21,7 +21,7 @@ HOWTO Setup and Use
 - Download and install the latest release version:
 <pre>git clone https://github.com/ykasidit/ecodroidlink.git</pre>
 
-- After it completes, a folder named 'ecodroidlink' would be created, you can cd into it. (After this, you can 'git pull' to check and get new updates...).
+- After it completes, a folder named 'ecodroidlink' would be created, you can cd into it. (After this, you can 'git pull origin master' to check and get new updates...).
 
 - If you're using a Raspberry Pi or Desktop computer, please get a compatible CSR-Based USB Bluetooth dongle (preferably Bluetooth CSR 4.0 Dongles - it had better results than older dongles we tested). If you're using a Notebook with internal Bluetooth, make sure it is turned-on and working on your GNU/Linux (Ubuntu, Debian, etc.) computer.
 
