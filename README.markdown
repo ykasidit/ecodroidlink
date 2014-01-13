@@ -30,7 +30,7 @@ HOWTO Setup and Use
 Let's test it
 -------------
 
-(I'm trying to write this to make it easy for linux beginners too - my apology to advanced readers if you find that there's too much explanation of the obvious basic commands.)
+(I'm trying to make this easy for beginners of GNU/Linux and Raspberry Pi to follow - my apology to advanced readers if you find that there's too much explanation on the obvious basic commands.)
 
 Ok, let's test it first: let's start the EcoDroidLink main manager - edl_main - it would make a new "bridge" and put your eth0 (ethernet) connection in it, reset DHCP on it - ready to share to new Bluetooth connections - to do all of this and more, it requires root access so a 'sudo' is required. Enter the following command: 
 <pre>sudo ./edl_main</pre>
