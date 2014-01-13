@@ -30,6 +30,8 @@ HOWTO Setup and Use
 Let's test it
 -------------
 
+(I'm trying to write this to make it easy for linux beginners too - my apology to advanced readers if you find that there's too much explanation of the obvious basic commands.)
+
 Ok, let's test it first: let's start the EcoDroidLink main manager - edl_main - it would make a new "bridge" and put your eth0 (ethernet) connection in it, reset DHCP on it - ready to share to new Bluetooth connections - to do all of this and more, it requires root access so a 'sudo' is required. Enter the following command: 
 <pre>sudo ./edl_main</pre>
 
@@ -125,25 +127,23 @@ It is advisable to create and use your own 'bridge' (in /etc/network/interfaces)
 
 Then, we'd use the option '--use_existing_bridge' to specify the bridge you've created.
 
-Let's get started:
+- Please create a bridge (like 'br0') containing your desired interface (like 'eth0'). This is done by editing /etc/network/interfaces file - please make a copy/backup of the original file if you're unsure. For more detailed info, please see <http://www.hkepc.com/forum/viewthread.php?tid=1710030> - the part about "The modified /etc/network/interfaces file".
 
-- First, just create a bridge (like 'br0') containing your desired interface (like 'eth0') in this file: sudo nano /etc/network/interfaces - let's first remove the 'auto eth0' line
+- Make sure you remove the dhcp setup line for your interface (which looks like 'iface eth0 inet dhcp') otherwise it could cause strange behavior - only set ip/dhcp for the bridge as explained in <http://www.linuxfoundation.org/collaborate/workgroups/networking/bridge#Creating_a_bridge_device>.
 
-For example, make it: 
+- For example, you might make it look something like: 
+<pre>
 auto lo
 iface lo inet loopback
 
 auto br0
 iface br0 inet dhcp
   bridge_ports eth0
+</pre>
 
-For more detailed info, please see <http://www.hkepc.com/forum/viewthread.php?tid=1710030> - the part about "The modified /etc/network/interfaces file".
+- If you want static ip instead of dhcp - please see <https://wiki.debian.org/NetworkConfiguration#Bridging> - for most computers which have eth0 only - make sure you remove the eth1 from the bridge_ports. 
 
-- For static ip examples please see <https://wiki.debian.org/NetworkConfiguration#Bridging> - for most computers which have eth0 only - make sure you remove the eth1 from the bridge_ports. 
-
-- Make sure you remove the dhcp setup line for your interface (which looks like 'iface eth0 inet dhcp') otherwise it could cause strange behavior - only set ip/dhcp for the bridge as explained in <http://www.linuxfoundation.org/collaborate/workgroups/networking/bridge#Creating_a_bridge_device>.
-
-- Restart your computer (sudo shutdown -r now), make sure internet works, for example: ping www.google.com
+- Restart your computer (sudo shutdown -r now), make sure internet works, for example try: <pre>ping www.google.com</pre>
 
 - Finally, use --use_existing_bridge to specify the bridge's name (like 'br0') to edl_main - for example:
 <pre>sudo ./edl_main --use_existing_bridge br0</pre>
