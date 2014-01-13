@@ -14,9 +14,54 @@ __status__ = "Production"
 #header format from http://stackoverflow.com/questions/1523427/python-what-is-the-common-header-format
 
 import edl_util
+from edl_util import printlog
 import singleton
+from optparse import OptionParser, make_option
 
 #http://stackoverflow.com/questions/380870/python-single-instance-of-program
 me = singleton.SingleInstance() # will sys.exit(-1) if other instance is running
 
-edl_util.main_loop()
+usage = """EcoDroidLink v1.20 - BlueZ Bluetooth Network Access Point Automation
+Please see README.markdown (at https://github.com/ykasidit/ecodroidlink) for full purpose, setup and usage.
+
+Usage:
+
+- [Default]: By default, edl_main would try to create a DHCP bridge over eth0, then use that bridge to share the internet to bluetooth clients. So just run:
+sudo ./edl_main
+
+However, if your main dhcp internet source is not eth0 (For example 'usb0' for usb-tethering internet sources) - you can specify it like below example for usb0 :
+sudo ./edl_main --interface usb0
+
+- [Recommended]: Please manually create a 'bridge' (in /etc/network/interfaces - you can fully customize the bridge as you like - static ip, etc) containing your desired interface (like 'eth0'). Make sure the same interface is not set out of the bridge. Restart your computer, make sure internet works, then specify the bridge's name (like 'br0') - for example:
+sudo ./edl_main --use_existing_bridge br0
+"""
+
+use_existing_bridge = None
+#if use_existing_bridge was not specified in option then create our own dhcp bridge, over eth0 by default
+src_interface = "eth0"
+
+##### override this like 'sudo ./edl_main --interface eth1' (for usb tethering sources it would be usb0)
+
+option_list = [
+		make_option("--interface", action="store",
+				type="string", dest="interface"),
+		make_option("--use_existing_bridge", action="store",
+				type="string", dest="existing_bridge")		
+		]
+
+parser = OptionParser(usage=usage,option_list=option_list)
+
+(options, args) = parser.parse_args()
+
+if (options.existing_bridge is not None):
+    use_existing_bridge = options.existing_bridge
+    printlog("edl: using existing bridge: "+use_existing_bridge)
+else:
+    use_existing_bridge = None
+    if (options.interface is not None):
+        printlog("edl: auto-create bridge (dhcp) over network interface "+options.interface)
+        src_interface = options.interface
+    else:
+        printlog("edl: auto-create bridge (dhcp) over default interface eth0 - you can customize like 'sudo ./edl_main --interface eth1' or usb0 or whatever is your internet souce. NOTE: It is recommended to create your own bridge in /etc/network/interfaces and specify like 'sudo ./edl_main --use_existing_bridge br0' for real deployment in auto-start-on-boot mode. Please see README.markdown for full info.")
+
+edl_util.main_loop(use_existing_bridge,src_interface)

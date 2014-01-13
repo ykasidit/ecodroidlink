@@ -106,3 +106,42 @@ Simply run:
 If it shows "Successfully setup auto-start-on-boot for edl_main" then you're done - reboot your pi and test it! For example run:
 <pre>sudo shutdown -r now</pre>
 
+NOTE: The default/generated autostart script would not contain any custom parameters. Therefore, if you want to specify --interface or the recommended --use_existing_bridge part as in next section, so please edit and add your desired parameters in the file /etc/init.d/ecodroidlink (sudo nano /etc/init.d/ecodroidlink) - the line which calls edl_main in the line under "start)" - make sure the trailing & is still there.
+
+Recommended: Manually create your own bridge for best connection reliability
+--------------------------------------------
+
+By default, the edl_main would automatically create a bridge over eth0 as already descibed above. However, this is done only once on startup, problems could arise if the ethernet cable gets temporarily disconnected and so forth - the edl_main auto-bridging doesn't check and re-bridge in such cases yet - the auto-bridging is intended for easy testing purposes but not permanet use.
+
+It is advisable to create and use your own 'bridge' (in /etc/network/interfaces) because you can fully customize the bridge as you like (static ip for your Computer/Pi, etc). So, just create a bridge (like 'br0') containing your desired interface (like 'eth0') in this file: sudo nano /etc/network/interfaces - let's first remove the 'auto eth0' line
+
+For example, make it: 
+auto lo
+iface lo inet loopback
+
+auto br0
+iface br0 inet dhcp
+  bridge_ports eth0
+
+For more detailed info, please see <http://www.hkepc.com/forum/viewthread.php?tid=1710030> - the part about "The modified /etc/network/interfaces file".
+
+- For static ip examples please see <https://wiki.debian.org/NetworkConfiguration#Bridging> - for most computers which have eth0 only - make sure you remove the eth1 from the bridge_ports. 
+
+- Make sure you removed do not have a line to setup dhcp for your interface (eth0) otherwise it could cause strange behavior - only set ip/dhcp for the bridge as explained in <http://www.linuxfoundation.org/collaborate/workgroups/networking/bridge#Creating_a_bridge_device>.
+
+- Restart your computer (sudo shutdown -r now), make sure internet works, then specify the bridge's name (like 'br0') - for example:
+sudo ./edl_main --use_existing_bridge br0
+
+License
+-------
+
+EcoDroidLink is free-software, licensed under GNU GPL, same as BlueZ. Please see the COPYING file in this same folder for full info.
+
+Special Thanks
+-------------
+
+- Thanks to the user 'howdy' in <http://www.hkepc.com/forum/viewthread.php?tid=1710030> for posting a detailed tutorial for setting nap on bluez.
+
+- Thanks to [BlueZ](http://www.bluez.org)
+
+- Thanks to Raspberry Pi forum users: Basil_R, Douglas6, maxwed, and all others providing great input/suggestions in <http://www.raspberrypi.org/phpBB3/viewtopic.php?f=36&t=57529>.

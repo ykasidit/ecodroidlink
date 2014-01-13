@@ -16,7 +16,6 @@ import dbus
 from subprocess import call
 import subprocess
 import os
-from optparse import OptionParser, make_option
 
 import logging
 import logging.handlers
@@ -30,48 +29,7 @@ def printlog(s):
     logger.info(s)
     print(s)
 
-####################3
-src_interface = "eth0"
-##### override this like 'sudo ./edl_main --interface eth1' (for usb tethering sources it would be usb0)
-
-#TODO - extact the current setting from the current interface and use that automatically - if it's static then use its current ip
-############### default is dhcp - to use static provide command-line options like 'sudo ./edl_main --ip 192.168.1.33 --mask 255.255.255.0'
-src_interface_ip_mode_dhcp = True
-src_interface_ifconfig_ip = ""
-src_interface_ifconfig_subnet_mask = ""
-
-option_list = [
-		make_option("--interface", action="store",
-				type="string", dest="interface"),
-		make_option("--ip", action="store",
-				type="string", dest="ip"),
-		make_option("--mask", action="store",
-				type="string", dest="mask"),
-		]
-
-parser = OptionParser(option_list=option_list)
-
-(options, args) = parser.parse_args()
-
-if (options.interface is not None):
-    printlog("edl: using network interface "+options.interface)
-    src_interface = options.interface
-else:
-    printlog("edl: using default interface eth0 - you can customize like 'sudo ./edl_main --interface eth1' or usb0 or whatever is your internet souce")
-
-if (options.ip is not None):
-    src_interface_ifconfig_ip = options.ip
-    src_interface_ifconfig_subnet_mask = options.mask
-    if (options.mask is None):
-        printlog("edl: ip supplied but mask not support - please supply --mask option")
-        exit(1)
-    printlog("edl: using static ip for bridge: "+options.ip+" subnet_mask: "+options.mask)
-    src_interface_ip_mode_dhcp = False
-    #TODO - try implementing static ip in the future - for now support only dhcp...
-    printlog("edl: static ip is NOT supported yet... you can try directly edit this python source code do to ifconfig instead of dhclient... and dont supply these ip params")
-    exit(2)
-else:
-    printlog("edl: using dhcp")
+####################
 
 def edl_call(cmd,dbg_header):
     printlog(dbg_header+": Attempt call: "+cmd);
@@ -140,7 +98,7 @@ def watch_agent_and_nap_process(agent_process,nap_process):
         return -3
         #end of watcher def
 
-def main_loop():
+def main_loop(use_existing_bridge,src_interface):
     while (1):
         printlog ("edl: EcoDroidLink initialzing/cleaning processes and adapter state...")
         edl_deinit()
@@ -160,33 +118,33 @@ def main_loop():
 
         printlog ("edl: bluetooth adapter ready")
 
-        ########### prepare new bridge between eth0 (or other interface as specified in option like 'sudo ./edl_main --interface eth1'
+        bridge_to_use = 'edl_br0'
 
-        ret = edl_call("sudo ifconfig "+src_interface,"edl_bridge_init");
-        if (ret != 0):
-            printlog("edl: CRITICAL source interface probably doesn't exist: "+src_interface+" - failed to get initial info of interface...")
-            break;
-
-        edl_call("sudo ifconfig "+src_interface+" 0.0.0.0 0.0.0.0","edl_bridge_init");
-        edl_call("sudo ifconfig edl_br0 down","edl_bridge_init")
-        edl_call("sudo brctl delbr edl_br0","edl_bridge_init")
-
-        ret = edl_call("sudo brctl addbr edl_br0","edl_bridge_init")        
-        if (ret != 0):
-            printlog("edl: CRITICAL create bridge edl_br0 failed!")
-            break;
-
-        ret = edl_call("sudo brctl addif edl_br0 "+src_interface,"edl_bridge_init")        
-        if (ret != 0):
-            printlog("edl: CRITICAL create bridge edl_br0 failed!")
-            break;
-
-        edl_call("sudo ifconfig edl_br0 0.0.0.0 0.0.0.0","edl_bridge_init")
-
-        ret = edl_call("sudo dhclient edl_br0","edl_bridge_init")
-        if (ret != 0):
-            printlog("edl: CRITICAL set DHCP for newly created bridge failed!")
-            break;
+        # if use_existing_bridge was not specified then make our own bridge... ########### prepare new bridge between eth0 (or other interface as specified in option)            
+        if use_existing_bridge is None:
+            printlog("edl: creating a bridge with DHCP over "+src_interface)
+            ret = edl_call("sudo ifconfig "+src_interface,"edl_bridge_init");
+            if (ret != 0):
+                printlog("edl: CRITICAL source interface probably doesn't exist: "+src_interface+" - failed to get initial info of interface...")
+                break;
+            edl_call("sudo ifconfig "+src_interface+" 0.0.0.0 0.0.0.0","edl_bridge_init");
+            edl_call("sudo ifconfig edl_br0 down","edl_bridge_init")
+            edl_call("sudo brctl delbr edl_br0","edl_bridge_init")
+            ret = edl_call("sudo brctl addbr edl_br0","edl_bridge_init")        
+            if (ret != 0):
+                printlog("edl: CRITICAL create bridge edl_br0 failed!")
+                break;
+            ret = edl_call("sudo brctl addif edl_br0 "+src_interface,"edl_bridge_init")        
+            if (ret != 0):
+                printlog("edl: CRITICAL create bridge edl_br0 failed!")
+                break;
+            edl_call("sudo ifconfig edl_br0 0.0.0.0 0.0.0.0","edl_bridge_init")
+            ret = edl_call("sudo dhclient edl_br0 ","edl_bridge_init")
+            if (ret != 0):
+                printlog("edl: CRITICAL set DHCP for newly created bridge failed!")
+                break;
+        else:
+            bridge_to_use = use_existing_bridge
 
         #get path to local module - since edl_nap and edl_agent are in the same folder        
         encoding = sys.getfilesystemencoding()
@@ -194,8 +152,8 @@ def main_loop():
 
         #start new NAP process - start this before the agent so the sdp profile would be there before users come to pair and discover services...
 
-        printlog('edl: path_to_execute agent and nap: '+this_path)
-        nap_process = subprocess.Popen(this_path+'/edl_nap edl_br0', shell=True)
+        printlog('edl: path_to_execute agent and nap on bridge: '+this_path)
+        nap_process = subprocess.Popen(this_path+'/edl_nap '+bridge_to_use, shell=True)
 
         time.sleep(5)
 
