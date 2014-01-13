@@ -108,12 +108,26 @@ If it shows "Successfully setup auto-start-on-boot for edl_main" then you're don
 
 NOTE: The default/generated autostart script would not contain any custom parameters. Therefore, if you want to specify --interface or the recommended --use_existing_bridge part as in next section, so please edit and add your desired parameters in the file /etc/init.d/ecodroidlink (sudo nano /etc/init.d/ecodroidlink) - the line which calls edl_main in the line under "start)" - make sure the trailing & is still there.
 
+NOTE:
+- To test if your edit has correct syntax and works correctly, you can do the below to stop and start the installed ecodroidlink service:
+<pre>sudo service ecodroidlink stop</pre>
+- Then:
+<pre>sudo service ecodroidlink start</pre>
+After the start, you'd see the normal output but since there was a trailing '&', it would not block. Just press 'enter' to get back to your shell prompt or stop the service to end it.
+
+
 Recommended: Manually create your own bridge for best connection reliability
 --------------------------------------------
 
-By default, the edl_main would automatically create a bridge over eth0 as already descibed above. However, this is done only once on startup, problems could arise if the ethernet cable gets temporarily disconnected and so forth - the edl_main auto-bridging doesn't check and re-bridge in such cases yet - the auto-bridging is intended for easy testing purposes but not permanet use.
+By default, the edl_main would automatically create a bridge over eth0 as already descibed above. However, this is done only once on startup, problems could arise if the ethernet cable gets temporarily disconnected and so forth - the edl_main auto-bridging doesn't check and re-bridge in such cases yet - the auto-bridging is intended for easy testing purposes but might not be suitable for long-term use.
 
-It is advisable to create and use your own 'bridge' (in /etc/network/interfaces) because you can fully customize the bridge as you like (static ip for your Computer/Pi, etc). So, just create a bridge (like 'br0') containing your desired interface (like 'eth0') in this file: sudo nano /etc/network/interfaces - let's first remove the 'auto eth0' line
+It is advisable to create and use your own 'bridge' (in /etc/network/interfaces) because you can fully customize the bridge as you like (static ip for your Computer/Pi, etc).
+
+Then, we'd use the option '--use_existing_bridge' to specify the bridge you've created.
+
+Let's get started:
+
+- First, just create a bridge (like 'br0') containing your desired interface (like 'eth0') in this file: sudo nano /etc/network/interfaces - let's first remove the 'auto eth0' line
 
 For example, make it: 
 auto lo
@@ -127,10 +141,14 @@ For more detailed info, please see <http://www.hkepc.com/forum/viewthread.php?ti
 
 - For static ip examples please see <https://wiki.debian.org/NetworkConfiguration#Bridging> - for most computers which have eth0 only - make sure you remove the eth1 from the bridge_ports. 
 
-- Make sure you removed do not have a line to setup dhcp for your interface (eth0) otherwise it could cause strange behavior - only set ip/dhcp for the bridge as explained in <http://www.linuxfoundation.org/collaborate/workgroups/networking/bridge#Creating_a_bridge_device>.
+- Make sure you remove the dhcp setup line for your interface (which looks like 'iface eth0 inet dhcp') otherwise it could cause strange behavior - only set ip/dhcp for the bridge as explained in <http://www.linuxfoundation.org/collaborate/workgroups/networking/bridge#Creating_a_bridge_device>.
 
-- Restart your computer (sudo shutdown -r now), make sure internet works, then specify the bridge's name (like 'br0') - for example:
-sudo ./edl_main --use_existing_bridge br0
+- Restart your computer (sudo shutdown -r now), make sure internet works, for example: ping www.google.com
+
+- Finally, use --use_existing_bridge to specify the bridge's name (like 'br0') to edl_main - for example:
+<pre>sudo ./edl_main --use_existing_bridge br0</pre>
+
+- If you're using the auto-start-on-boot feature. Remember to edit the startup-script:  <pre>sudo nano /etc/init.d/ecodroidlink</pre> to make the edl_main line look like 'edl_main --use_existing_bridge br0 &' too.
 
 License
 -------
