@@ -139,7 +139,7 @@ iface lo inet loopback
 
 auto br0
 iface br0 inet dhcp
-      bridge_ports eth0      
+      bridge_ports eth0
 </pre>
 
 - If you want static ip instead of dhcp - please see <https://wiki.debian.org/NetworkConfiguration#Bridging> - for most computers which have eth0 only - make sure you remove the eth1 from the bridge_ports. 
