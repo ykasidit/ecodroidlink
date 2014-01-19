@@ -132,13 +132,14 @@ Then, we'd use the option '--use_existing_bridge' to specify the bridge you've c
 - Make sure you remove the dhcp setup line for your interface (which looks like 'iface eth0 inet dhcp') otherwise it could cause strange behavior - only set ip/dhcp for the bridge as explained in <http://www.linuxfoundation.org/collaborate/workgroups/networking/bridge#Creating_a_bridge_device>.
 
 - For example, you might make it look something like: 
+
 <pre>
 auto lo
 iface lo inet loopback
 
 auto br0
 iface br0 inet dhcp
-  bridge_ports eth0
+      bridge_ports eth0      
 </pre>
 
 - If you want static ip instead of dhcp - please see <https://wiki.debian.org/NetworkConfiguration#Bridging> - for most computers which have eth0 only - make sure you remove the eth1 from the bridge_ports. 

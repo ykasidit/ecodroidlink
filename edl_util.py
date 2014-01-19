@@ -99,7 +99,7 @@ def watch_agent_and_nap_process(agent_process,nap_process):
         #end of watcher def
 
 def main_loop(use_existing_bridge,src_interface):
-    edl_call("sudo echo 1 > /proc/sys/net/ipv4/ip_forward","edl") # Although, theoretically this is 'ip forwarding' might not be required since the bridge works at the lower layer so it should already forwards all ip packets (http://www.linuxjournal.com/article/8172 or http://www.linuxfoundation.org/collaborate/workgroups/networking/bridge - "Since forwarding is done at Layer 2, all protocols can go transparently through a bridge."), and I've tested that the bluetooth-nap works without this ip-forward, but I'm not so sure if I understand correctly - so just enable it here just-in-case - perhaps for future advanced non-bridging modes like a local router with dns-server that also filters/redirects traffic...
+    # dont enable ip-forwarding since it somehow causes problems with my nexus5 - so comment out this code - edl_call("sudo echo 1 > /proc/sys/net/ipv4/ip_forward","edl") # Theoretically this is 'ip forwarding' might not be required since the bridge works at the lower layer so it should already forwards all ip packets (http://www.linuxjournal.com/article/8172 or http://www.linuxfoundation.org/collaborate/workgroups/networking/bridge - "Since forwarding is done at Layer 2, all protocols can go transparently through a bridge."), and I've tested that the bluetooth-nap works without this ip-forward
     while (1):
         printlog ("edl: EcoDroidLink initialzing/cleaning processes and adapter state...")
         edl_deinit()
@@ -128,18 +128,20 @@ def main_loop(use_existing_bridge,src_interface):
             if (ret != 0):
                 printlog("edl: CRITICAL source interface probably doesn't exist: "+src_interface+" - failed to get initial info of interface...")
                 break;
-            edl_call("sudo ifconfig "+src_interface+" 0.0.0.0 0.0.0.0","edl_bridge_init");
+            edl_call("sudo ifconfig "+src_interface+" 0.0.0.0","edl_bridge_init");
             edl_call("sudo ifconfig edl_br0 down","edl_bridge_init")
             edl_call("sudo brctl delbr edl_br0","edl_bridge_init")
             ret = edl_call("sudo brctl addbr edl_br0","edl_bridge_init")        
             if (ret != 0):
                 printlog("edl: CRITICAL create bridge edl_br0 failed!")
                 break;
+            # this stp makes the internet fail to work entierely in my tests - comment it out - edl_call("sudo brctl stp edl_br0 on ","edl_bridge_init")
+            # this forward-delay causes slow down in setting and and dhcp in my tests - comment it out - edl_call("sudo brctl setfd edl_br0 5","edl_bridge_init")
             ret = edl_call("sudo brctl addif edl_br0 "+src_interface,"edl_bridge_init")        
             if (ret != 0):
                 printlog("edl: CRITICAL create bridge edl_br0 failed!")
                 break;
-            edl_call("sudo ifconfig edl_br0 0.0.0.0 0.0.0.0","edl_bridge_init")
+            edl_call("sudo ifconfig edl_br0 0.0.0.0","edl_bridge_init")
             ret = edl_call("sudo dhclient edl_br0 ","edl_bridge_init")
             if (ret != 0):
                 printlog("edl: CRITICAL set DHCP for newly created bridge failed!")
