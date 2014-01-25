@@ -32,20 +32,30 @@ Let's test it
 
 (I'm trying to make this easy for beginners of GNU/Linux and Raspberry Pi to follow - my apology to advanced readers if you find that there's too much explanation on the obvious basic commands.)
 
+Note: To change the Bluetooth display name of your new Pi Bluetooth Access Point - please edit the /etc/hostname file - the default would be 'raspberrypi-0'.
+
 Ok, let's test it first: let's start the EcoDroidLink main manager - edl_main - it would make a new "bridge" and put your eth0 (ethernet) connection in it, reset DHCP on it - ready to share to new Bluetooth connections - to do all of this and more, it requires root access so a 'sudo' is required. Enter the following command: 
+<pre>cd ecodroidlink</pre>
 <pre>sudo ./edl_main</pre>
 
 (Note: If your internet-source is not the default 'eth0' - you can specify it via the '--interface' option. So if your internet source is usb0, use a command like: sudo ./edl_main --interface usb0)
 
 Then, it would proceed - once it shows "edl: Bluetooth Network Access Point Server (for nap) registered for bridge edl_br0" - this means it's done! Now you can proceed to connect from your Android device or other computers which have Bluetooth.
 
-- Below is an example output EcoDroidLink running on Ubuntu 12.04:
+- Below is an example output of installing and running EcoDroidLink Raspbian Wheezy:
 
-(I'm using usb0 here since I don't have LAN internet right now, so using 'USB Tethering' from my phone as the internet source... if your're using the normal eth0 ethernet/LAN then don't specify "--interface usb0"! Just use "sudo ./edl_main")
-
-<pre>kasidit@kasidit-computer:~/ecodroidlink$ sudo ./edl_main --interface usb0
-edl: using network interface usb0
-edl: using dhcp
+<pre>
+pi@raspberrypi:~$ git clone https://github.com/ykasidit/ecodroidlink.git
+Cloning into 'ecodroidlink'...
+remote: Reusing existing pack: 69, done.
+remote: Total 69 (delta 0), reused 0 (delta 0)
+Unpacking objects: 100% (69/69), done.
+pi@raspberrypi:~$ cd ecodroidlink/
+pi@raspberrypi:~/ecodroidlink$ ls
+bluezutils.py  edl_main  edl_stop     install_autostart  singleton.py
+edl_agent      edl_nap   edl_util.py  README.markdown    TODO
+pi@raspberrypi:~/ecodroidlink$ sudo ./edl_main 
+edl: auto-create bridge (dhcp) over default interface eth0 - you can customize like 'sudo ./edl_main --interface eth1' or usb0 or whatever is your internet souce. NOTE: It is recommended to create your own bridge in /etc/network/interfaces and specify like 'sudo ./edl_main --use_existing_bridge br0' for real deployment in auto-start-on-boot mode. Please see README.markdown for full info.
 edl: EcoDroidLink initialzing/cleaning processes and adapter state...
 edl_deinit: Attempt call: killall edl_agent
 edl_agent: no process found
@@ -65,39 +75,51 @@ edl_init: Call completed: hciconfig -a hci0 sspmode 1 *RESULT:* 0
 edl_init: Attempt call: hciconfig -a hci0 piscan
 edl_init: Call completed: hciconfig -a hci0 piscan *RESULT:* 0
 edl: bluetooth adapter ready
-edl_bridge_init: Attempt call: sudo ifconfig usb0
-usb0      Link encap:Ethernet  HWaddr ea:9b:d4:36:11:47  
-          inet6 addr: fe80::e89b:d4ff:fe36:1147/64 Scope:Link
+edl: creating a bridge with DHCP over eth0
+edl_bridge_init: Attempt call: sudo ifconfig eth0
+eth0      Link encap:Ethernet  HWaddr b8:27:eb:38:76:19  
+          inet addr:192.168.1.42  Bcast:192.168.1.255  Mask:255.255.255.0
           UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
-          RX packets:1949 errors:0 dropped:0 overruns:0 frame:0
-          TX packets:1692 errors:0 dropped:0 overruns:0 carrier:0
+          RX packets:14014 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:5985 errors:0 dropped:0 overruns:0 carrier:0
           collisions:0 txqueuelen:1000 
-          RX bytes:2135942 (2.1 MB)  TX bytes:270351 (270.3 KB)
+          RX bytes:9946459 (9.4 MiB)  TX bytes:490751 (479.2 KiB)
 
-edl_bridge_init: Call completed: sudo ifconfig usb0 *RESULT:* 0
-edl_bridge_init: Attempt call: sudo ifconfig usb0 0.0.0.0 0.0.0.0
-edl_bridge_init: Call completed: sudo ifconfig usb0 0.0.0.0 0.0.0.0 *RESULT:* 0
+edl_bridge_init: Call completed: sudo ifconfig eth0 *RESULT:* 0
+edl_bridge_init: Attempt call: sudo ifconfig eth0 0.0.0.0
+edl_bridge_init: Call completed: sudo ifconfig eth0 0.0.0.0 *RESULT:* 0
 edl_bridge_init: Attempt call: sudo ifconfig edl_br0 down
-edl_bridge_init: Call completed: sudo ifconfig edl_br0 down *RESULT:* 0
+edl_br0: ERROR while getting interface flags: No such device
+edl_bridge_init: Call completed: sudo ifconfig edl_br0 down *RESULT:* 255
 edl_bridge_init: Attempt call: sudo brctl delbr edl_br0
-edl_bridge_init: Call completed: sudo brctl delbr edl_br0 *RESULT:* 0
+bridge edl_br0 doesn't exist; can't delete it
+edl_bridge_init: Call completed: sudo brctl delbr edl_br0 *RESULT:* 1
 edl_bridge_init: Attempt call: sudo brctl addbr edl_br0
 edl_bridge_init: Call completed: sudo brctl addbr edl_br0 *RESULT:* 0
-edl_bridge_init: Attempt call: sudo brctl addif edl_br0 usb0
-edl_bridge_init: Call completed: sudo brctl addif edl_br0 usb0 *RESULT:* 0
-edl_bridge_init: Attempt call: sudo ifconfig edl_br0 0.0.0.0 0.0.0.0
-edl_bridge_init: Call completed: sudo ifconfig edl_br0 0.0.0.0 0.0.0.0 *RESULT:* 0
-edl_bridge_init: Attempt call: sudo dhclient edl_br0
-edl_bridge_init: Call completed: sudo dhclient edl_br0 *RESULT:* 0
+edl_bridge_init: Attempt call: sudo brctl addif edl_br0 eth0
+edl_bridge_init: Call completed: sudo brctl addif edl_br0 eth0 *RESULT:* 0
+edl_bridge_init: Attempt call: sudo ifconfig edl_br0 0.0.0.0
+edl_bridge_init: Call completed: sudo ifconfig edl_br0 0.0.0.0 *RESULT:* 0
+edl_bridge_init: Attempt call: sudo dhclient edl_br0 
+mv: cannot stat `/etc/samba/dhcp.conf.new': No such file or directory
+edl_bridge_init: Call completed: sudo dhclient edl_br0  *RESULT:* 0
+edl: path_to_execute agent and nap on bridge: /home/pi/ecodroidlink
 edl: Bluetooth Network Access Point Server (for nap) registered for bridge edl_br0
 edl: agent starting
 edl: this is probably an older bluez version - trying old compat code...
 edl: auto-pair/accept agent registered with older bluez method
 </pre>
 
-If all goes well, now let's connect from your android phone/tablet - for instructions and screenshots on how to setup Android phones/tablets to use your new Bluetooth Internet source - please see the "Android Bluetooth Internet Setup" topic of the [Official EcoDroidLink Page](http://www.clearevo.com/ecodroidlink) - there are also intructions/screenchots to setup and use Bluetooth Internet on Windows 7, Windows XP and Ubuntu computers in the "Computer Bluetooth interent Setup" section in that same page.
+If all goes well, now let's connect from your Android phone/tablet, or your PC or other Raspberry Pis:
 
-If you've got internet working from your android, let's install it for autostart in the next section below.
+  - **Using Bluetooth Internet on Android**: Please see the screenshots and steps at the section ["Android Bluetooth Internet Setup"](http://www.clearevo.com/ecodroidlink/#setup_android) in the official EcoDroidLink page.
+
+  - **Using Bluetooth Internet from other Raspberry Pis**: Please see the simple steps at the section [Raspberry Pi Bluetooth Internet Setup](http://www.clearevo.com/ecodroidlink/#setup_raspberry_pi) in the official EcoDroidLink page.
+
+  - **Using Bluetooth Internet from Computers/Laptops**: Please see the screenshots and steps for your OS (Windows 7, Windows XP or Ubuntu) at the section [Computer Bluetooth Internet Setup](http://www.clearevo.com/ecodroidlink/#setup_computer) in the official EcoDroidLink page.
+
+
+If you've got internet working from your Android or Raspberry Pi as desired, let's install it for autostart in the next section below.
 
 Make EcoDroidLink autostart-on-boot
 ----------------------------------
