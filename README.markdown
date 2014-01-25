@@ -112,7 +112,7 @@ edl: auto-pair/accept agent registered with older bluez method
 
 If all goes well, now let's connect from your Android phone/tablet, or your PC or other Raspberry Pis:
 
-  - **Using Bluetooth Internet on Android**: Please see the screenshots and steps at the section ["Android Bluetooth Internet Setup"](http://www.clearevo.com/ecodroidlink/#setup_android) in the official EcoDroidLink page. Note: Bluetooth internet from Android Kitkat (4.4) devices are not so stable at the moment - probably because of the new/young Bluedroid stack.
+  - **Using Bluetooth Internet on Android**: Please see the screenshots and steps at the section [Android Bluetooth Internet Setup](http://www.clearevo.com/ecodroidlink/#setup_android) in the official EcoDroidLink page. Note: Bluetooth internet from Android Kitkat (4.4) devices are not so stable at the moment - probably because of the new/young Bluedroid stack.
 
   - **Using Bluetooth Internet from other Raspberry Pis**: Please see the simple steps at the section [Raspberry Pi Bluetooth Internet Setup](http://www.clearevo.com/ecodroidlink/#setup_raspberry_pi) in the official EcoDroidLink page.
 
