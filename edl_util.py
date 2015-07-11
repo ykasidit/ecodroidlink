@@ -151,8 +151,12 @@ def main_loop(use_existing_bridge,src_interface):
 
         #get path to local module - since edl_nap and edl_agent are in the same folder        
         encoding = sys.getfilesystemencoding()
-        this_path = os.path.dirname(unicode(__file__, encoding))
-
+        this_path = ""
+        try:
+            this_path = os.path.dirname(unicode(__file__, encoding))
+        except Exception as e:
+            this_path = os.path.dirname(str(__file__))
+            
         #start new NAP process - start this before the agent so the sdp profile would be there before users come to pair and discover services...
 
         printlog('edl: path_to_execute agent and nap on bridge: '+this_path)

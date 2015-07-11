@@ -44,9 +44,9 @@ except: #try older bluez 4.98 compat code
     manager = dbus.Interface(bus.get_object("org.bluez", "/"),
 						"org.bluez.Manager")
     if options.dev_id:
-	adapter_path = manager.FindAdapter(options.dev_id)
+        adapter_path = manager.FindAdapter(options.dev_id)
     else:
-	adapter_path = manager.DefaultAdapter()
+        adapter_path = manager.DefaultAdapter()
 
 server = dbus.Interface(bus.get_object("org.bluez", adapter_path),
 						"org.bluez.NetworkServer1")
