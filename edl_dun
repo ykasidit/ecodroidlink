@@ -1,0 +1,151 @@
+#!/usr/bin/python
+
+#EcoDroidLink: modified to continue NAP forever and changed NetworkServer to NetworkServer1 to make it work - from bluez-5.7/test/test-nap
+
+from __future__ import absolute_import, print_function, unicode_literals
+
+from edl_util import edl_call
+import sys
+import time
+import dbus
+from optparse import OptionParser, make_option
+import bluezutils
+import logging
+import logging.handlers
+import subprocess
+import os
+
+logger = logging.getLogger('edl_dun')
+logger.setLevel(logging.DEBUG)
+handler = logging.handlers.SysLogHandler(address = '/dev/log')
+logger.addHandler(handler)
+
+def printlog(s):
+    logger.info(s)
+    print(s)
+
+rfcomm_num = 100
+
+dun_sdp_rec_match_str = "Service Name: Dial-Up NetworkingService RecHandle: "
+
+#rm all dun services
+def del_all_sdp_dun_records():
+    edl_call('sdptool browse local | grep \"{}\" > sdp_dun_rec_handles'.format(dun_sdp_rec_match_str),"dun")
+    with open("sdp_dun_rec_handles", "r") as ins:
+        array = []
+        for line in ins:
+            line = line.replace(dun_sdp_rec_match_str,"")
+            edl_call("sdptool del {}".format(line),"dun")
+
+def get_response_for_at(instr):
+
+    ret = b'OK\r\n' #default
+
+    if instr.startswith(b'AT\r'):
+        ret = b'OK\r\n'
+    elif instr.startswith(b'AT+CGMI\r'):
+        ret = b'EcoDroidLink DUN by ClearEvo.com\r\nOK\r\n'
+    elif instr.startswith(b'AT+CGMM\r'):
+        ret = b'Ethernet via BT DUN\r\nOK\r\n'
+    elif instr.startswith(b'ATDT'):
+        ret = b'CONNECT\r\n'
+
+    return ret
+
+def watch_pppd_proc_and_rfcomm_proc(pppd_proc,rfcomm_proc):
+    while (1):
+
+        rps = rfcomm_proc.poll()
+        if (rps is not None): #means it has exit
+            print("3_rfcomm_proc_has_exit! break and end handler loop")
+            return -1
+
+        pps = rfcomm_proc.poll()
+        if (pps is not None): #means it has exit
+            print("3_pppd_proc_has_exit! break and end handler loop")
+            return -1
+
+        time.sleep(1)
+
+
+def handle_rfcomm_connection(rfcomm_proc,devfd,rfcomm_dev):
+    while (1):
+        rps = rfcomm_proc.poll()
+        if (rps is not None): #means it has exit
+            print("2_rfcomm_proc_has_exit! break and end handler loop")
+            return -1
+        
+        instr = None
+        try:
+            instr = os.read(devfd,2048)        
+            print("read input: [{}]".format(instr))
+
+            if instr is None:
+                print("got empty read from devfd - retry in 200 ms",type(e))
+            else:
+                outstr = get_response_for_at(instr)
+            wret = os.write(devfd,outstr)
+            print("wrote response [{}] res: {}".format(outstr,wret))
+            #if we wrote CONNECT then now start pppd on the fd
+            if (outstr.startswith(b'CONNECT\r')):
+                print("dun at connect done - starting pppd on devfd now...")
+                try:
+                    os.close(devfd)
+                except Exception as e:
+                    print("devfd close failed: {}",type(e))
+                pppd_cmd_str = "pppd -d {} 115200 192.168.1.39:192.168.1.222 noauth nodetach passive local crtscts silent netmask 255.255.255.0 ms-dns 192.168.1.1".format(rfcomm_dev)
+                pppd_proc = subprocess.Popen(pppd_cmd_str, shell=True)
+                return watch_pppd_proc_and_rfcomm_proc(pppd_proc,rfcomm_proc)
+
+        except Exception as e:
+            print("devfd io failed: {} - retry in 200 ms",type(e))
+        time.sleep(0.2)        
+
+def handle_rfcomm_proc_and_dev(rfcomm_proc,rfcomm_dev):
+    while (1):
+        #check rfcomm_proc
+        rps = rfcomm_proc.poll()
+        if (rps is not None): #means it has exit
+            print("rfcomm_proc_has_exit! break and end handler loop")
+            return -1
+        
+        #open rfcomm_dev and r/w to it
+        devfd = None
+        try:
+            devfd = os.open(rfcomm_dev,os.O_RDWR)
+        except Exception as e:
+            print("open devfd failed: {}",type(e))
+
+        if (devfd is not None):
+            print("opened rfcomm connection")
+            handle_rfcomm_connection(rfcomm_proc,devfd,rfcomm_dev)
+            print("handle_rfcomm_connection ended - kill rfcomm_proc")
+            try:
+                rfcomm_proc.kill()
+            except Exception as e:
+                print ("rfcomm_proc kill failed (might have already ended): {}",type(e))
+            return 0
+        else:
+            print("can't open rfcomm connection - try again in 0.5 Sec...")
+
+        time.sleep(0.5);
+        #end of while loop
+
+
+
+while (True):
+    edl_call('echo 1 > /proc/sys/net/ipv4/ip_forward',"dun")
+    edl_call("killall rfcomm","dun")
+    del_all_sdp_dun_records()
+    if ( 0 != edl_call('sdptool browse local | grep \"{}\"'.format(dun_sdp_rec_match_str),"dun") ):
+         print("dun profile not in sdp yet - add it...")
+         edl_call("sdptool add --channel=1 DUN","dun")
+    edl_call("rfcomm release /dev/rfcomm{}".format(rfcomm_num),"dun")
+    edl_call("rm /dev/rfcomm{}".format(rfcomm_num),"dun")
+    rfcomm_dev = "/dev/rfcomm{}".format(rfcomm_num)
+    rfcomm_proc = subprocess.Popen("rfcomm listen {} 1".format(rfcomm_dev), shell=True)
+    handle_rfcomm_proc_and_dev(rfcomm_proc,rfcomm_dev)
+    edl_call("rfcomm release /dev/rfcomm{}".format(rfcomm_num),"dun")
+    edl_call("rm /dev/rfcomm{}".format(rfcomm_num),"dun")
+    rfcomm_num = rfcomm_num + 1
+

@@ -1,11 +1,6 @@
 #!/usr/bin/python
 
-# Original source: from bluez-5.7/test/test-nap
-
-# EcoDroidLink/ykasidit@gmail.com modifications:
-# - edited wait to continue NAP forever 
-# - changed NetworkServer to NetworkServer1 to make it work for from bluez-5.7/test/test-nap case
-# - add compatibility code to run on older bluez (like 4.98 in Ubuntu 12.04 and probably Raspbian) if new bluez 5.7 method doesn't work - try with older test-nap core methods - tested on Ubuntu 12.04
+#EcoDroidLink: modified to continue NAP forever and changed NetworkServer to NetworkServer1 to make it work - from bluez-5.7/test/test-nap
 
 from __future__ import absolute_import, print_function, unicode_literals
 
@@ -36,18 +31,7 @@ parser = OptionParser(option_list=option_list)
 
 (options, args) = parser.parse_args()
 
-adapter_path = ""
-
-try: #try new bluez 5.7 code
-    adapter_path = bluezutils.find_adapter(options.dev_id).object_path
-except: #try older bluez 4.98 compat code
-    manager = dbus.Interface(bus.get_object("org.bluez", "/"),
-						"org.bluez.Manager")
-    if options.dev_id:
-	adapter_path = manager.FindAdapter(options.dev_id)
-    else:
-	adapter_path = manager.DefaultAdapter()
-
+adapter_path = bluezutils.find_adapter(options.dev_id).object_path
 server = dbus.Interface(bus.get_object("org.bluez", adapter_path),
 						"org.bluez.NetworkServer1")
 
@@ -58,14 +42,9 @@ if (len(args) < 1):
 else:
 	bridge = args[0]
 
-try: #new bluez 5.7 code
-    server.Register(service, bridge)
-except: #try older bluez 4.98 compat code
-    server = dbus.Interface(bus.get_object("org.bluez", adapter_path),
-						"org.bluez.NetworkServer")
-    server.Register(service, bridge)
+server.Register(service, bridge)
 
-printlog("edl: Bluetooth Network Access Point Server (for %s) registered for bridge %s" % (service, bridge))
+printlog("Server for %s registered for %s" % (service, bridge))
 
 try:
 	while (1):

@@ -1,27 +1,8 @@
-* make --use_existing_bridge method - for normal manual ip method\
-
-* does this dynamic bridge method handle eth0 physical remove/add? if
-   not then remove all this dynamic bridge code and use bridge only!
-
-* --dns-server for non-internet mode use as local http server
-
-* manual ip + dns mode for direct computer to pi development via ssh +
-   bt obex auto accept method too
-
-* ifconfig how to speficy gateway and dns? test on home network
-
-* main param in edl_main optionally takes an interface name to
-   overridate the default "eth0" and second param is ip - to use
-   ifconfig instead of dhclient...
-
-* test on raspbian and archlinux again...
-
-* test ssh - development
-  - raspbian
-  - archlinux
-
----
-
 make all edl_* handle sigint and cleanup before exit
 let edl_stop call killall -INT to cleanup well before ext
-edl_stop make as singleton too
+
+pi2
+---
+
+login: admin@ip
+pass: edl12345

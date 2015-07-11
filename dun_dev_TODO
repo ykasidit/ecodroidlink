@@ -1,0 +1,10 @@
+* detect DNS we got through DHCP
+* detect a free IP (to use for DUN Client)
+* detect our own IP on eth0
+* use above 3 in:
+                pppd_cmd_str = "pppd -d {} 115200 192.168.1.39:192.168.1.222 noauth nodetach passive local crtscts silent netmask 255.255.255.0 ms-dns 192.168.1.1".format(rfcomm_dev)
+
+* detect Modem-hangup from the pppd output and treat same as exit -
+   kill both pppd and rfcomm
+
+* shall we implement our own gateway instead to stay on our own subnet?
