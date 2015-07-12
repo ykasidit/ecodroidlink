@@ -1,0 +1,6 @@
+[Match]
+Name=eth0
+
+[Network]
+#DHCP=both
+Bridge=br0
