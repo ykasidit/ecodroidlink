@@ -1,0 +1,11 @@
+[Unit] 
+Description=EcoDroidLink - edl_main script
+StopWhenUnneeded=yes
+
+[Service]
+ExecStart=/home/admin/ecodroidlink/edl_main_br0.sh
+ExecStop=/home/admin/ecodroidlink/edl_stop
+LimitNPROC=1
+
+[Install] 
+WantedBy=bluetooth.target
