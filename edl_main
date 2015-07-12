@@ -27,7 +27,7 @@ Please see README.markdown (at https://github.com/ykasidit/ecodroidlink) for ful
 
 Usage:
 
-- [Default]: By default, edl_main would try to create a DHCP bridge over eth0, then use that bridge to share the internet to bluetooth clients. So just run:
+- [Default]: By default, without any params, edl_main would assume an existing-bridge br0. For the older 'auto' ceate a DHCP bridge over eth0, then use that bridge to share the internet to bluetooth clients. So just run:
 sudo ./edl_main --auto_bridge
 
 However, if your main dhcp internet source is not eth0 (For example 'usb0' for usb-tethering internet sources) - you can specify it like below example for usb0 :
@@ -57,7 +57,12 @@ parser = OptionParser(usage=usage,option_list=option_list)
 
 (options, args) = parser.parse_args()
 
-if (options.existing_bridge is not None):
+if (auto_bridge == False and use_existing_bridge is None):   
+    use_existing_bridge = "br0"
+
+if (use_existing_bridge is not None):
+     printlog("running default mode - use br0 bridge")    
+elif (options.existing_bridge is not None):
     use_existing_bridge = options.existing_bridge
     printlog("edl: using existing bridge: "+use_existing_bridge)
 else:
@@ -75,9 +80,5 @@ try:
 except Exception as e:
     this_path = os.path.dirname(str(__file__))
 edl_util.edl_call(this_path+"/prepare_ecodroidlink_data_parition.sh","hook_prepare_data")
-
-if (auto_bridge == False and use_existing_bridge is None):
-    printlog("running default mode - use br0 bridge")
-    use_existing_bridge = "br0"
-        
+       
 edl_util.main_loop(use_existing_bridge,src_interface)

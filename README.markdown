@@ -34,9 +34,9 @@ Let's test it
 
 Note: To change the Bluetooth display name of your new Pi Bluetooth Access Point - please edit the /etc/hostname file - the default would be 'raspberrypi-0'.
 
-Ok, let's test it first: let's start the EcoDroidLink main manager - edl_main - it would make a new "bridge" and put your eth0 (ethernet) connection in it, reset DHCP on it - ready to share to new Bluetooth connections - to do all of this and more, it requires root access so a 'sudo' is required. Enter the following command: 
+Ok, let's test it first: let's start the EcoDroidLink main manager - edl_main --auto_mode - it would make a new "bridge" and put your eth0 (ethernet) connection in it, reset DHCP on it - ready to share to new Bluetooth connections - to do all of this and more, it requires root access so a 'sudo' is required. Enter the following command: 
 <pre>cd ecodroidlink</pre>
-<pre>sudo ./edl_main</pre>
+<pre>sudo ./edl_main --auto_mode</pre>
 
 (Note: If your internet-source is not the default 'eth0' - you can specify it via the '--interface' option. So if your internet source is usb0, use a command like: sudo ./edl_main --interface usb0)
 
