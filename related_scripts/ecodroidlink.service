@@ -3,7 +3,7 @@ Description=EcoDroidLink - edl_main script
 StopWhenUnneeded=yes
 
 [Service]
-ExecStart=/home/admin/ecodroidlink/edl_main_br0.sh
+ExecStart=/home/admin/ecodroidlink/edl_main
 ExecStop=/home/admin/ecodroidlink/edl_stop
 LimitNPROC=1
 

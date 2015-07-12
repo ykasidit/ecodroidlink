@@ -1,0 +1,9 @@
+[Unit]
+Description=Mount ecodroidlink data parition before start bluetoothd
+
+[Service]
+Type=oneshot
+ExecStart=/home/admin/ecodroidlink/prepare_ecodroidlink_data_parition.sh
+
+[Install]
+WantedBy=bluetooth.target

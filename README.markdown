@@ -38,7 +38,7 @@ Ok, let's test it first: let's start the EcoDroidLink main manager - edl_main --
 <pre>cd ecodroidlink</pre>
 <pre>sudo ./edl_main --auto_mode</pre>
 
-(Note: If your internet-source is not the default 'eth0' - you can specify it via the '--interface' option. So if your internet source is usb0, use a command like: sudo ./edl_main --interface usb0)
+(Note: If your internet-source is not the default 'eth0' - you can specify it via the '--interface' option. So if your internet source is usb0, use a command like: sudo ./edl_main --auto_mode --interface usb0)
 
 Then, it would proceed - once it shows "edl: Bluetooth Network Access Point Server (for nap) registered for bridge edl_br0" - this means it's done! Now you can proceed to connect from your Android device or other computers which have Bluetooth.
 
@@ -54,7 +54,7 @@ pi@raspberrypi:~$ cd ecodroidlink/
 pi@raspberrypi:~/ecodroidlink$ ls
 bluezutils.py  edl_main  edl_stop     install_autostart  singleton.py
 edl_agent      edl_nap   edl_util.py  README.markdown    TODO
-pi@raspberrypi:~/ecodroidlink$ sudo ./edl_main 
+pi@raspberrypi:~/ecodroidlink$ sudo ./edl_main --auto_mode
 edl: auto-create bridge (dhcp) over default interface eth0 - you can customize like 'sudo ./edl_main --interface eth1' or usb0 or whatever is your internet souce. NOTE: It is recommended to create your own bridge in /etc/network/interfaces and specify like 'sudo ./edl_main --use_existing_bridge br0' for real deployment in auto-start-on-boot mode. Please see README.markdown for full info.
 edl: EcoDroidLink initialzing/cleaning processes and adapter state...
 edl_deinit: Attempt call: killall edl_agent

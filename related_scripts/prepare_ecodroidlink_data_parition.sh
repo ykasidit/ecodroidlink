@@ -18,13 +18,18 @@ if [ $? = 0 ]; then
     exit 0
 fi
 
+#below two would normally fail but it's not a problem
 rmdir /ecodroidlink_data
 mkdir /ecodroidlink_data
+
 echo 'edl_data_prepare: try mount it'
 mount -t ext4 "$EDL_DISK_DEV" /ecodroidlink_data
 
 if [ $? = 0 ]; then
     echo "edl_data_prepare: mount success - exit."
+    #below for cases after re-format of parition and the folder is not there
+    #linked from /var/lib/bluetooth
+    mkdir /ecodroidlink_data/bluetooth
     exit 0
 fi
 
@@ -42,6 +47,9 @@ mount -t ext4 "$EDL_DISK_DEV" /ecodroidlink_data
 
 if [ $? = 0 ]; then
     echo "edl_data_prepare: mount success after format - exit."
+    #below for cases after re-format of parition and the folder is not there
+    #linked from /var/lib/bluetooth
+    mkdir /ecodroidlink_data/bluetooth
     exit 0
 fi
 
