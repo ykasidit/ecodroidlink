@@ -1,7 +1,10 @@
 
 * Broadcast its own ip
 
-* Try disable autosuspend (can't find the power/control or autosuspend option in this archlinux)
+* (howto) (done) disable autosuspend (can't find the power/control or autosuspend option in this archlinux)
+  * set autosuspend to -1 for in /etc/modprobe.d/usb-autosuspend.conf like so:
+  options usbcore autosuspend=-1
+  
 
 ---
 
