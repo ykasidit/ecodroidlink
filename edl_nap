@@ -16,6 +16,8 @@ from optparse import OptionParser, make_option
 import bluezutils
 import logging
 import logging.handlers
+import edl_util
+from edl_util import edl_call
 
 logger = logging.getLogger('edl_nap')
 logger.setLevel(logging.DEBUG)
@@ -66,6 +68,7 @@ except: #try older bluez 4.98 compat code
     server.Register(service, bridge)
 
 printlog("edl: Bluetooth Network Access Point Server (for %s) registered for bridge %s" % (service, bridge))
+edl_call("hciconfig -a hci0 class 0x020300", "edl_nap set class after reg")
 
 try:
 	while (1):

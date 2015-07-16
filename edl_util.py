@@ -51,8 +51,6 @@ def edl_init_adapter():
     #if (ret != 0):
     #    return ret;
 
-    time.sleep(1);
-
     ret = edl_call("hciconfig -a hci0 class 0x020300", "edl_init")
     if (ret != 0):
         return ret;
@@ -62,11 +60,6 @@ def edl_init_adapter():
         printlog("edl: NOTE - The local (USB) Bluetooth device on this computer doesn't support simple-pairing-mode - you'd need to enter 0000 to pair...")
 
     ret = edl_call("hciconfig -a hci0 piscan", "edl_init")
-    if (ret != 0):
-        return ret;
-
-    #set again as some devices the class set above donest seem to work
-    ret = edl_call("hciconfig -a hci0 class 0x020300", "edl_init")
     if (ret != 0):
         return ret;
 
