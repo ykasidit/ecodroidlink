@@ -1,6 +1,7 @@
-* Check why device class not as bluetooth access point
 
 * Broadcast its own ip
+
+* Try disable autosuspend (can't find the power/control or autosuspend option in this archlinux)
 
 ---
 
