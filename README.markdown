@@ -1,6 +1,8 @@
 EcoDroidLink BlueZ NAP automation/management software
 =====================================================
 
+*IMPORTANT: This branch is designed for advanced users. For Archlinux-ARM. If you're using Raspbian or Ubuntu - please use the master branch instead. The default behaviour in this branch requires a pre-configured bridge - not auto-bridge creation as in master branch.*
+
 About
 -----
 

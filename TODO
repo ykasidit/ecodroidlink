@@ -1,20 +1,29 @@
-* make --use_existing_bridge method - for normal manual ip method\
+* Check why device class not as bluetooth access point
 
-* does this dynamic bridge method handle eth0 physical remove/add? if
-   not then remove all this dynamic bridge code and use bridge only!
+* Broadcast its own ip
+
+---
+
+* Ubuntu PC dmesg on disconnect:
+[ 6584.284495] Bluetooth: Unexpected start frame (len 367)
+
+(In this case - it happend shortly after the phone next to it
+   disconnects from bt manually. Another full-day use did not have such disconnects.)
+
+Related web searches below:
+
+http://ubuntuforums.org/showthread.php?t=2159645&page=6
+
+http://askubuntu.com/questions/589617/apple-magic-mouse-frequently-disconnects-and-reconnects/629495#629495
+
+https://grvj.wordpress.com/2013/11/21/bluetooth-sleep-issue-linux-mintubuntu/
+
+---
 
 * --dns-server for non-internet mode use as local http server
 
 * manual ip + dns mode for direct computer to pi development via ssh +
    bt obex auto accept method too
-
-* ifconfig how to speficy gateway and dns? test on home network
-
-* main param in edl_main optionally takes an interface name to
-   overridate the default "eth0" and second param is ip - to use
-   ifconfig instead of dhclient...
-
-* test on raspbian and archlinux again...
 
 * test ssh - development
   - raspbian
