@@ -42,9 +42,16 @@ def edl_call_no_log(cmd,dbg_header):
     return ret
 
 def edl_init_adapter():
+
+    # some say it helps in some cases - not sure but try set this as we're not using sco audio links anyway for our access point
+    edl_call("echo Y > /sys/module/bluetooth/parameters/disable_esco") 
+        
     ret = edl_call("hciconfig -a hci0 up", "edl_init")
     if (ret != 0):
         return ret;
+
+    #set again just in case it requires the bt to be up first (not sure - didn't check kernel sources yet)
+    edl_call("echo Y > /sys/module/bluetooth/parameters/disable_esco") 
 
     #now use default bt name - which is taken from computer name in /etc/hostname instead
     #ret = edl_call("hciconfig -a hci0 name EcoDroidLink", "edl_init")
