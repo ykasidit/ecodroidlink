@@ -1,3 +1,7 @@
+* check singleinstance tmp folder - doest it get emptied on reboot? it
+   not then our systemd service should execstartpre call to rm the tmp
+   file to make sure the lock is always cleared on reboot and doesn't
+   get stuck
 
 * Broadcast its own ip
 
