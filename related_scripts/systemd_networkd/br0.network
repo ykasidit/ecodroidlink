@@ -2,5 +2,5 @@
 Name=br0
 
 [Network]
-DHCP=both
-
+DHCP=yes
+IPForward=kernel
