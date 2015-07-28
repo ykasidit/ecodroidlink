@@ -106,7 +106,10 @@ def watch_agent_and_nap_process(agent_process,nap_process):
         #end of watcher def
 
 def main_loop(use_existing_bridge,src_interface):
-    # dont enable ip-forwarding since it somehow causes problems with my nexus5 - so comment out this code - edl_call("sudo echo 1 > /proc/sys/net/ipv4/ip_forward","edl") # Theoretically this is 'ip forwarding' might not be required since the bridge works at the lower layer so it should already forwards all ip packets (http://www.linuxjournal.com/article/8172 or http://www.linuxfoundation.org/collaborate/workgroups/networking/bridge - "Since forwarding is done at Layer 2, all protocols can go transparently through a bridge."), and I've tested that the bluetooth-nap works without this ip-forward
+    # try enable ip-forwarding
+    edl_call("sudo echo 1 > /proc/sys/net/ipv4/ip_forward","edl")
+    # Although, theoretically this 'ip forwarding' might not be required since the bridge works at the lower layer so it should already forwards all ip packets (http://www.linuxjournal.com/article/8172 or http://www.linuxfoundation.org/collaborate/workgroups/networking/bridge - "Since forwarding is done at Layer 2, all protocols can go transparently through a bridge."), and I've tested that the bluetooth-nap works without this ip-forward
+    
     while (1):
         printlog ("edl: EcoDroidLink initialzing/cleaning processes and adapter state...")
         edl_deinit()
