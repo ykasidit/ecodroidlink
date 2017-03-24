@@ -1,0 +1,9 @@
+New depricated hciconfit bluez method notes
+===========================================
+
+btmgmt power on
+hci0 Set Powered complete, settings: powered connectable bondable ssp br/edr le secure-conn 
+[root@alarm test]# btmgmt power on
+hci0 Set Powered complete, settings: powered connectable bondable ssp br/edr le secure-conn 
+[root@alarm test]# ./test-adapter discoverable on
+[root@alarm test]# 
