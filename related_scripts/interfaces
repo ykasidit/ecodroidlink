@@ -1,0 +1,16 @@
+# This file intentionally left blank
+#
+# All interfaces are handled by network-manager, use nmtui or nmcli on
+# server/headless images or the "Network Manager" GUI on desktop images
+
+ # The loopback network interface
+ auto lo br0
+ iface lo inet loopback
+
+ # Set up interfaces manually, avoiding conflicts with, e.g., network manager
+ iface eth0 inet manual
+
+
+ # Bridge setup
+ iface br0 inet dhcp
+    bridge_ports eth0

@@ -1,6 +1,0 @@
-[Match]
-Name=br0
-
-[Network]
-DHCP=yes
-IPForward=kernel
